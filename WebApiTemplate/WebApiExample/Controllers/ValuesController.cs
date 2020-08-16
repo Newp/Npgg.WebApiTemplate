@@ -13,18 +13,17 @@ namespace WebApiExample.Controllers
     public class ValuesController : ControllerBase
     {
         [HttpGet]
-        [Description("test gogogo")]
         public string Get()
         {
             return "values ok";
         }
 
         [HttpGet("{id}")]
-        [Description("test id get")]
-        public string Get(int id, string pass)
+        public string Get(int id, [FromQuery] string pass)
         {
-            return "value>" + id;
+            return $"value>{id}, pass:{pass}";
         }
+
 
 
     }

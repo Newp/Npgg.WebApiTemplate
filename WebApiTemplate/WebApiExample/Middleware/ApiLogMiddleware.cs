@@ -27,6 +27,7 @@ namespace WebApiExample.Middleware
         {
             var endpoint = context.GetEndpoint();
 
+            
             //var metadatas = endpoint.Metadata.ToArray();
             //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
             //var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
@@ -42,6 +43,7 @@ namespace WebApiExample.Middleware
                     Path = context.Request.Path.Value,
                     Body = encoding.GetString(requestBody),
                     Headers = JsonSerializer.Serialize( context.Request.Headers),
+                    QueryString = context.Request.QueryString.ToString(),
                     Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
@@ -72,6 +74,7 @@ namespace WebApiExample.Middleware
         public string Path { get; set; }
         public string Method { get; set; }
         public string Headers { get; set; }
+        public string QueryString { get; set; }
         public string Body { get; set; }
     }
 
