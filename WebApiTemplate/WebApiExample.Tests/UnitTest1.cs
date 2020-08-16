@@ -34,12 +34,16 @@ namespace WebApiExample.Tests
         {
             var client = this.GetClient();
 
-            var querystring = "?a=1&b=2&b=3";
+            var word = "abcdefg";
+            var querystring = "?a=1&b=2&b=3&pass=" + word;
             var path = "/api/values/3939" + querystring;
             var result = await client.GetAsync(path);
 
             var log = this.PopLog<ApiLog>();
 
+            var resBody = await result.Content.ReadAsStringAsync();
+
+            Assert.EndsWith(word, resBody);
             Assert.Equal(querystring, log.Value.Request.QueryString);
         }
     }
