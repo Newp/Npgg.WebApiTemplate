@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,10 +26,16 @@ namespace WebApiExample
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddScoped<ApiLogMiddleware>();
+            services.AddSingleton<LogService>();
+            services.AddSingleton<TimeService>();
+
+            //            var json = JsonSerializer.Serialize(services.ToArray());
+            //var allkeys = services.ToArray().Select(item => item.Name).ToArray();
+            //var xx = allkeys.Where(name => name.Contains("Value")).ToArray();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

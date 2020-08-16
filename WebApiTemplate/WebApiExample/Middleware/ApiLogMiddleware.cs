@@ -9,44 +9,51 @@ using Npgg.Middleware;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Text.Json;
 
 namespace WebApiExample.Middleware
 {
     public class ApiLogMiddleware : AfterResponseMiddleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
-        //public override void AfterResponse(HttpContext context, byte[] requestBody, byte[] responseBody, long elp)
-        //{
-        //    
+        private readonly LogService logger;
 
-        //    var reqBody = encoding.GetBytes(requestBody);
+        public ApiLogMiddleware( LogService logger)
+        {
+            this.logger = logger;
+        }
 
-        //    var log = 
-        //}
         public override void AfterResponse(HttpContext context, byte[] requestBody, byte[] responseBody, long elapsedMilliseconds)
         {
             var endpoint = context.GetEndpoint();
+
+            //var metadatas = endpoint.Metadata.ToArray();
+            //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
+            //var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
+
+            var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
             
-                var metadatas = endpoint.Metadata.ToArray();
-                var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
-                var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
-
-            var actionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
-
-
             var log = new ApiLog()
             {
                 Elapsed = elapsedMilliseconds,
-                ApiPattern = actionDescriptor.AttributeRouteInfo.Template,
+                ApiPattern = actionDescriptor?.AttributeRouteInfo.Template,
                 Request = new RequestLog()
                 {
-                    
+                    Path = context.Request.Path.Value,
+                    Body = encoding.GetString(requestBody),
+                    Headers = JsonSerializer.Serialize( context.Request.Headers),
+                    Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
                 {
-                    
+                    Body = encoding.GetString(responseBody),
+                    Headers = JsonSerializer.Serialize(context.Response.Headers),
+                    Status = context.Response.StatusCode
                 }
             };
+
+            logger.Write("api_result", log);
+
         }
 
 
@@ -64,15 +71,15 @@ namespace WebApiExample.Middleware
     {
         public string Path { get; set; }
         public string Method { get; set; }
-        public IHeaderDictionary Headers { get; set; }
+        public string Headers { get; set; }
         public string Body { get; set; }
     }
 
 
     public class ResponseLog
     {
-        public HttpStatusCode Status { get; set; }
-        public IHeaderDictionary Headers { get; set; }
+        public int Status { get; set; }
+        public string Headers { get; set; }
         public string Body { get; set; }
     }
 }
