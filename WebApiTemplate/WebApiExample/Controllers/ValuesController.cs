@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiExample.Middleware;
 
 namespace WebApiExample.Controllers
 {
@@ -13,15 +14,24 @@ namespace WebApiExample.Controllers
     public class ValuesController : ControllerBase
     {
         [HttpGet]
+        [AnonymousApi]
         public string Get()
         {
             return "values ok";
         }
 
         [HttpGet("{id}")]
+        [AnonymousApi]
         public string Get(int id, [FromQuery] string pass)
         {
             return $"value>{id}, pass:{pass}";
+        }
+
+
+        [HttpGet("authenticated")]
+        public string AuthenticatedGet()
+        {
+            return "authenticated ok";
         }
 
 

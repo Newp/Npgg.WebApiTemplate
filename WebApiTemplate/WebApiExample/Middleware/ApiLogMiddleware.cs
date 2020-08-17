@@ -17,16 +17,16 @@ namespace WebApiExample.Middleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
-
+        
         public ApiLogMiddleware( LogService logger)
         {
             this.logger = logger;
         }
 
+
         public override void AfterResponse(HttpContext context, byte[] requestBody, byte[] responseBody, long elapsedMilliseconds)
         {
             var endpoint = context.GetEndpoint();
-
             
             //var metadatas = endpoint.Metadata.ToArray();
             //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();

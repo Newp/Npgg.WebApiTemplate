@@ -19,6 +19,8 @@ namespace Npgg.Middleware
         {
             watch.Restart();
 
+            var endpoint = context.GetEndpoint();
+
             byte[] request = null;
             byte[] response = null;
             

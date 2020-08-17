@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using WebApiExample.Middleware;
+using WebApiExample.Service;
 
 namespace WebApiExample
 {
@@ -32,49 +33,30 @@ namespace WebApiExample
         {
             services.AddControllers();
 
-            services.AddScoped<ApiLogMiddleware>();
+            foreach(var middleware in 
+                this.GetType()
+                .Assembly.GetTypes()
+                .Where(type => typeof(IMiddleware).IsAssignableFrom(type) && type.IsClass))
+            {
+                services.AddScoped(middleware);
+            }
+                
+
+            
+
+            //services.AddScoped<ApiLogMiddleware>();
+            //services.AddScoped<ApiLogMiddleware>();
+            //services.AddScoped<ApiLogMiddleware>();
             services.AddSingleton<LogService>();
             services.AddSingleton<TimeService>();
-            services.AddScoped<IQueryCollection, IQq>();
+            services.AddSingleton<AuthenticationService>();
+            
 
             //            var json = JsonSerializer.Serialize(services.ToArray());
             //var allkeys = services.ToArray().Select(item => item.Name).ToArray();
             //var xx = allkeys.Where(name => name.Contains("Value")).ToArray();
         }
 
-        class IQq : IQueryCollection
-        {
-            public IQq()
-            {
-
-            }
-
-            public StringValues this[string key] => throw new NotImplementedException();
-
-            public int Count => throw new NotImplementedException();
-
-            public ICollection<string> Keys => throw new NotImplementedException();
-
-            public bool ContainsKey(string key)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IEnumerator<KeyValuePair<string, StringValues>> GetEnumerator()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool TryGetValue(string key, out StringValues value)
-            {
-                throw new NotImplementedException();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                throw new NotImplementedException();
-            }
-        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -86,9 +68,14 @@ namespace WebApiExample
 
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<ApiLogMiddleware>();
-
             app.UseRouting();
+
+
+            
+            
+            app.UseMiddleware<ApiLogMiddleware>();
+            app.UseMiddleware<TryCatchMiddleware>();
+            app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseAuthorization();
 
