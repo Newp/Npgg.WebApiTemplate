@@ -12,8 +12,18 @@ namespace WebApiExample.Middleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            var endpoint = context.GetEndpoint();
+
+            if (endpoint == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
+
+
             try
             {
+                
                 await next(context);
             }
             catch (HandledException hex)

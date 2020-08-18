@@ -22,12 +22,6 @@ namespace WebApiExample.Middleware
         {
             var endpoint = context.GetEndpoint();
 
-            if(endpoint == null)
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
-            }
-
             bool isAnonymous = endpoint.Metadata.GetMetadata<AnonymousApiAttribute>() != null;
 
             bool authenticated = context.Request.Headers.TryGetValue<string>("access_token", out var accessToken)
