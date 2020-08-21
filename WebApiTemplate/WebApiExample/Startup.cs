@@ -28,10 +28,10 @@ namespace WebApiExample
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(); // action result 의 값을 json 타입으로 변환시켜줍니다.
 
             foreach(var middleware in 
                 this.GetType()
@@ -40,21 +40,10 @@ namespace WebApiExample
             {
                 services.AddScoped(middleware);
             }
-                
 
-            
-
-            //services.AddScoped<ApiLogMiddleware>();
-            //services.AddScoped<ApiLogMiddleware>();
-            //services.AddScoped<ApiLogMiddleware>();
             services.AddSingleton<LogService>();
             services.AddSingleton<TimeService>();
             services.AddSingleton<AuthenticationService>();
-            
-
-            //            var json = JsonSerializer.Serialize(services.ToArray());
-            //var allkeys = services.ToArray().Select(item => item.Name).ToArray();
-            //var xx = allkeys.Where(name => name.Contains("Value")).ToArray();
         }
 
 
