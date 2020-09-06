@@ -10,15 +10,16 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Middleware
 {
-    public class ApiLogMiddleware : AfterResponseMiddleware
+    public class TopLevelMiddleware : Npgg.Middleware.TopLevelMiddleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
         
-        public ApiLogMiddleware( LogService logger)
+        public TopLevelMiddleware( LogService logger)
         {
             this.logger = logger;
         }
@@ -42,23 +43,20 @@ namespace WebApiExample.Middleware
                 {
                     Path = context.Request.Path.Value,
                     Body = encoding.GetString(requestBody),
-                    Headers = JsonSerializer.Serialize( context.Request.Headers),
+                    Headers = JsonConvert.SerializeObject( context.Request.Headers),
                     QueryString = context.Request.QueryString.ToString(),
                     Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
                 {
                     Body = encoding.GetString(responseBody),
-                    Headers = JsonSerializer.Serialize(context.Response.Headers),
+                    Headers = JsonConvert.SerializeObject(context.Response.Headers),
                     Status = context.Response.StatusCode
                 }
             };
 
             logger.Write("api_result", log);
-
         }
-
-
     }
 
     public class ApiLog

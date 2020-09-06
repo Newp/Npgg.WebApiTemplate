@@ -62,7 +62,7 @@ namespace WebApiExample
 
             
             
-            app.UseMiddleware<ApiLogMiddleware>();
+            app.UseMiddleware<TopLevelMiddleware>();
             app.UseMiddleware<TryCatchMiddleware>();
             app.UseMiddleware<AuthenticationMiddleware>();
 

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Npgg.Middleware
 {
-    public abstract class AfterResponseMiddleware : IMiddleware
+    public abstract class TopLevelMiddleware : IMiddleware
     {
-        Stopwatch watch = new Stopwatch();
+        readonly Stopwatch watch = new Stopwatch();
 
         public abstract void AfterResponse(HttpContext context, byte[] requestBody, byte[] responseBody, long elapsedMilliseconds);
 
@@ -19,10 +19,7 @@ namespace Npgg.Middleware
         {
             watch.Restart();
 
-            var endpoint = context.GetEndpoint();
-
-            byte[] request = null;
-            byte[] response = null;
+            byte[] request, response;
             
             context.Request.EnableBuffering();
 
