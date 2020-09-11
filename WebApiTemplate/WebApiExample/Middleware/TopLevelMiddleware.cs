@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace WebApiExample.Middleware
 {
-    public class TopLevelMiddleware : Npgg.Middleware.TopLevelMiddleware
+    public class TopLevelMiddleware : Npgg.Middleware.TopLevelMiddleware, IMiddleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
@@ -24,32 +24,33 @@ namespace WebApiExample.Middleware
             this.logger = logger;
         }
 
-
-        public override void AfterResponse(HttpContext context, byte[] requestBody, byte[] responseBody, long elapsedMilliseconds)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var endpoint = context.GetEndpoint();
-            
+
             //var metadatas = endpoint.Metadata.ToArray();
             //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
             //var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
 
+            var result = await base.Invoke(context, next);
+
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
-            
+
             var log = new ApiLog()
             {
-                Elapsed = elapsedMilliseconds,
+                Elapsed = result.ElapsedMilliseconds,
                 ApiPattern = actionDescriptor?.AttributeRouteInfo.Template,
                 Request = new RequestLog()
                 {
                     Path = context.Request.Path.Value,
-                    Body = encoding.GetString(requestBody),
-                    Headers = JsonConvert.SerializeObject( context.Request.Headers),
+                    Body = encoding.GetString(result.RequestBody),
+                    Headers = JsonConvert.SerializeObject(context.Request.Headers),
                     QueryString = context.Request.QueryString.ToString(),
                     Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
                 {
-                    Body = encoding.GetString(responseBody),
+                    Body = encoding.GetString(result.ResponseBody),
                     Headers = JsonConvert.SerializeObject(context.Response.Headers),
                     Status = context.Response.StatusCode
                 }
