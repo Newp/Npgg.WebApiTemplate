@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Npgg.Middleware;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Middleware
 {
@@ -20,34 +21,38 @@ namespace WebApiExample.Middleware
                 return;
             }
 
-
             try
             {
-                
                 await next(context);
             }
             catch (HandledException hex)
             {
                 context.Response.StatusCode = (int)hex.StatusCode;
                 
+                if(hex.ResponseObject != null)
+                {
+                    var handledExceptionBody = JsonConvert.SerializeObject(hex.ResponseObject);
+                    await context.Response.WriteAsync(handledExceptionBody);
+                }
             }
             catch (Exception ex)
             {
-                //throw;
+                context.Response.StatusCode = 503;//internal server error
+                //logger.WriteError
             }
         }
     }
 
     public class HandledException : Exception
     {
-        public HttpStatusCode StatusCode { get; set; }
-
-        public HandledException(HttpStatusCode statusCode)
+        public HttpStatusCode StatusCode { get; }
+        public object ResponseObject { get; }
+        public HandledException(HttpStatusCode statusCode, object response)
         {
-            StatusCode = statusCode;
+            this.StatusCode = statusCode;
+            this.ResponseObject = response;
         }
 
-        public string Messag { get; set; }
-
+        
     }
 }

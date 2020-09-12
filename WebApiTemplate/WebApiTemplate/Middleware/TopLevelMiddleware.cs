@@ -55,34 +55,5 @@ namespace Npgg.Middleware
                 ResponseBody = responseBuffer.ToArray(),
             };
         }
-
-        //public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-        //{
-        //    watch.Restart();
-
-        //    byte[] request, response;
-            
-        //    context.Request.EnableBuffering();
-
-        //    //request scope
-        //    var requestBuffer = new MemoryStream();
-        //    await context.Request.BodyReader.CopyToAsync(requestBuffer);
-        //    context.Request.Body.Position = 0;
-        //    request = requestBuffer.ToArray();
-                
-        //    //response scope
-        //    var clientResponseStream = context.Response.Body;
-        //    var responseBuffer = new MemoryStream();
-        //    context.Response.Body = responseBuffer;
-
-        //    //process api action
-        //    await next(context);
-        //    response = responseBuffer.ToArray();
-        //    await clientResponseStream.WriteAsync(response, 0, response.Length);
-
-        //    watch.Stop();
-            
-        //    this.AfterResponse(context, request, response, watch.ElapsedMilliseconds);
-        //}
     }
 }

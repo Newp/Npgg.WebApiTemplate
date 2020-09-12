@@ -16,6 +16,17 @@ namespace WebApiExample.Tests
     public class UnitTest1 : BaseFixture
     {
         [Fact]
+        public async Task GetOkTest()
+        {
+            var client = this.GetClient();
+
+            var path = "/api/values";
+            var result = await client.GetAsync(path);
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Fact]
         public async Task ApiPathLogTest()
         {
             var client = this.GetClient();

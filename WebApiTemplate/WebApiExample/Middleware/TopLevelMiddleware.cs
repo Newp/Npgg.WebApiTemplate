@@ -26,15 +26,14 @@ namespace WebApiExample.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
+            var result = await base.Invoke(context, next);
+
             var endpoint = context.GetEndpoint();
+            var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
             //var metadatas = endpoint.Metadata.ToArray();
             //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
             //var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
-
-            var result = await base.Invoke(context, next);
-
-            var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
             var log = new ApiLog()
             {
