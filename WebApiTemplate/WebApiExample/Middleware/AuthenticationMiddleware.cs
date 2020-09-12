@@ -29,7 +29,7 @@ namespace WebApiExample.Middleware
 
             if (isAnonymous == false && authenticated == false)
             {
-                throw new HandledException(HttpStatusCode.Unauthorized);
+                throw new HandledException(HttpStatusCode.Unauthorized, "you shall not pass");
             }
 
             await next(context);
