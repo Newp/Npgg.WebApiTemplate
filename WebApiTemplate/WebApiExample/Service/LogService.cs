@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -13,10 +14,13 @@ namespace WebApiExample
 
     public class LogService
     {
+        private readonly ILogger logger;
         private readonly TimeService time;
 
-        public LogService(TimeService time)
+        public LogService(ILoggerProvider provider, TimeService time)
         {
+            this.logger = provider?.CreateLogger("test");
+            //this.logger = logger;
             this.time = time;
         }
 
@@ -33,7 +37,9 @@ namespace WebApiExample
         protected virtual void Write(object message)
         {
             var json = JsonSerializer.Serialize(message);
-            Console.WriteLine(json);
+
+            logger.LogDebug(json);
+            //Console.WriteLine(json);
         }
     }
 

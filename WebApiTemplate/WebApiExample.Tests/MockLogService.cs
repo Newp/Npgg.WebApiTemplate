@@ -7,7 +7,7 @@ namespace WebApiExample.Tests
     {
         public Queue<string> Logs = new Queue<string>();
 
-        public MockLogService(TimeService time) : base(time)
+        public MockLogService(TimeService time) : base(null, time)
         {
         }
 

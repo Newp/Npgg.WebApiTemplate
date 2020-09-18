@@ -44,6 +44,7 @@ namespace WebApiExample
             services.AddSingleton<LogService>();
             services.AddSingleton<TimeService>();
             services.AddSingleton<AuthenticationService>();
+            services.AddSingleton<AutholizationService>();
         }
 
 
@@ -65,6 +66,7 @@ namespace WebApiExample
             app.UseMiddleware<TopLevelMiddleware>();
             app.UseMiddleware<TryCatchMiddleware>();
             app.UseMiddleware<AuthenticationMiddleware>();
+            app.UseMiddleware<AutholizationMiddleware>();
 
             app.UseAuthorization();
 

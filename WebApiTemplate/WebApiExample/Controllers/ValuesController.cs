@@ -20,6 +20,14 @@ namespace WebApiExample.Controllers
             return "values ok";
         }
 
+
+        [HttpGet("error")]
+        [AnonymousApi]
+        public string GetError()
+        {
+            throw new Exception("test error");
+        }
+
         [HttpGet("{id}")]
         [AnonymousApi]
         public string Get(int id, [FromQuery] string pass)
