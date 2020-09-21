@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: location
-      uses: cd ./WebApiTemplate
+      run: cd ./WebApiTemplate
     - name: Install dependencies
       run: dotnet restore
     - name: Build
