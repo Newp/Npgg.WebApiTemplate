@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: echo access_key_id
-      run: echo secrets.AWS_ACCESS_KEY_ID
+      run: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
     - name: Install dependencies
       run: dotnet restore
     - name: Build
