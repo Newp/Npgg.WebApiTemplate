@@ -86,10 +86,5 @@ namespace WebApiExample.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
 
-        [Fact]
-        public void ErrorTest()
-        {
-            Assert.True(false);
-        }
     }
 }
