@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Pipelines;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Npgg.Middleware
@@ -20,10 +15,11 @@ namespace Npgg.Middleware
 
     public abstract class TopLevelMiddleware
     {
-        readonly Stopwatch watch = new Stopwatch();
 
         public async Task<ApiInvokeResult> Invoke(HttpContext context, RequestDelegate next)
         {
+            Stopwatch watch = new Stopwatch()
+
             watch.Restart();
 
             context.Request.EnableBuffering();
