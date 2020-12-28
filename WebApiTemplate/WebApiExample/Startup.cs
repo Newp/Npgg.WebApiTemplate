@@ -36,7 +36,7 @@ namespace WebApiExample
             foreach(var middleware in 
                 this.GetType()
                 .Assembly.GetTypes()
-                .Where(type => typeof(IMiddleware).IsAssignableFrom(type) && type.IsClass))
+                .Where(type => typeof(IMiddleware).IsAssignableFrom(type) && type.IsClass && !type.IsAbstract))
             {
                 services.AddScoped(middleware);
             }

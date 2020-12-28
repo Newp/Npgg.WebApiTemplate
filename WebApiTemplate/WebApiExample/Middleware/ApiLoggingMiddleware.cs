@@ -11,10 +11,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Text.Json;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.IO;
 
 namespace WebApiExample.Middleware
 {
-    public class ApiLoggingMiddleware : Npgg.Middleware.TopLevelMiddleware, IMiddleware
+    public struct ApiInvokeResult
+    {
+        public byte[] RequestBody;
+        public byte[] ResponseBody;
+        public long ElapsedMilliseconds;
+    }
+
+    public class ApiLoggingMiddleware :  IMiddleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
@@ -26,7 +35,38 @@ namespace WebApiExample.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var result = await base.Invoke(context, next);
+            Stopwatch watch = new Stopwatch();
+
+            watch.Restart();
+
+            context.Request.EnableBuffering();
+
+            //request scope
+            var requestBuffer = new MemoryStream();
+            await context.Request.BodyReader.CopyToAsync(requestBuffer);
+            context.Request.Body.Position = 0;
+
+            //response scope
+            var clientResponseStream = context.Response.Body;
+            var responseBuffer = new MemoryStream();
+            context.Response.Body = responseBuffer;
+
+            //process api action
+            await next(context);
+
+            responseBuffer.Position = 0;
+            await responseBuffer.CopyToAsync(clientResponseStream);
+
+            //await clientResponseStream.WriteAsync(response, 0, response.Length);
+
+            watch.Stop();
+
+            var result = new ApiInvokeResult()
+            {
+                ElapsedMilliseconds = watch.ElapsedMilliseconds,
+                RequestBody = requestBuffer.ToArray(),
+                ResponseBody = responseBuffer.ToArray(),
+            };
 
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
