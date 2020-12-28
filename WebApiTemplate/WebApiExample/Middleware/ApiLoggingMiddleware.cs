@@ -61,13 +61,6 @@ namespace WebApiExample.Middleware
 
             watch.Stop();
 
-            var result = new ApiInvokeResult()
-            {
-                ElapsedMilliseconds = watch.ElapsedMilliseconds,
-                RequestBody = requestBuffer.ToArray(),
-                ResponseBody = responseBuffer.ToArray(),
-            };
-
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
 
@@ -77,19 +70,19 @@ namespace WebApiExample.Middleware
 
             var log = new ApiLog()
             {
-                Elapsed = result.ElapsedMilliseconds,
+                Elapsed = watch.ElapsedMilliseconds,
                 ApiPattern = actionDescriptor?.AttributeRouteInfo.Template,
                 Request = new RequestLog()
                 {
                     Path = context.Request.Path.Value,
-                    Body = encoding.GetString(result.RequestBody),
+                    Body = encoding.GetString(requestBuffer.ToArray()),
                     Headers = JsonConvert.SerializeObject(context.Request.Headers),
                     QueryString = context.Request.QueryString.ToString(),
                     Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
                 {
-                    Body = encoding.GetString(result.ResponseBody),
+                    Body = encoding.GetString(responseBuffer.ToArray()),
                     Headers = JsonConvert.SerializeObject(context.Response.Headers),
                     Status = context.Response.StatusCode
                 }
