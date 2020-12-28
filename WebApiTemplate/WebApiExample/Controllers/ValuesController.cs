@@ -51,6 +51,10 @@ namespace WebApiExample.Controllers
             return "autholized ok";
         }
 
+        [HttpPost]
+        public void Post()
+        {
 
+        }
     }
 }

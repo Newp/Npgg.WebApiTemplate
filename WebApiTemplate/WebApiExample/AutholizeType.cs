@@ -6,5 +6,9 @@
         SeasonPass,
         Subscriber,
     }
-    
+ 
+    public class UseIdempotent : System.Attribute
+    {
+
+    }
 }

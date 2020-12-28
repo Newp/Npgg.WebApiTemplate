@@ -9,6 +9,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using WebApiExample.Service;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace WebApiExample.Tests
 {
@@ -16,14 +17,30 @@ namespace WebApiExample.Tests
     public class UnitTest1 : BaseFixture
     {
         string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+        readonly HttpClient client;
+        public UnitTest1()
+        {
+            client = this.GetClient();
+        }
 
         [Fact]
         public async Task GetOkTest()
         {
-            var client = this.GetClient();
-
             var path = "/api/values";
             var result = await client.GetAsync(path);
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task PostOkTest()
+        {
+            string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = null });
+            client.DefaultRequestHeaders.Add("access_token", token); //
+
+            var path = "/api/values";
+            var result = await client.PostAsync(path, new StringContent(""));
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
@@ -31,8 +48,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task ApiPathLogTest()
         {
-            var client = this.GetClient();
-
             var path = "/api/values/3939";
             var result = await client.GetAsync(path);
 
@@ -47,8 +62,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task QueryStringLogTest()
         {
-            var client = this.GetClient();
-
             var word = "abcdefg";
             var querystring = "?a=1&b=2&b=3&pass=" + word;
             var path = "/api/values/3939" + querystring;
@@ -67,8 +80,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task UnauthenticatedTest()
         {
-            var client = this.GetClient();
-
             var result = await client.GetAsync("/api/values/authenticated");
 
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
@@ -79,9 +90,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task AuthenticatedTest()
         {
-
-            var client = this.GetClient();
-
             client.DefaultRequestHeaders.Add("access_token", token);
 
             var result = await client.GetAsync("/api/values/authenticated");
@@ -93,8 +101,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task AutholizedGetTest()
         {
-            var client = this.GetClient();
-
             string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = new AutholizeType[] { AutholizeType.Subscriber } });
             client.DefaultRequestHeaders.Add("access_token", token); //
 
@@ -106,8 +112,6 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task UnautholizedGetTest()
         {
-            var client = this.GetClient();
-
             string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = null });
             client.DefaultRequestHeaders.Add("access_token", token); //
 
