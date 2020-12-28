@@ -8,9 +8,6 @@ namespace WebApiExample.Service
 {
     public class AutholizationService
     {
-        public bool CheckAutholize(AutholizeType autholizeType)
-        {
-            return true;
-        }
+        public bool CheckAutholize(AccessToken accessToken, AutholizeType autholizeType) => accessToken.AutholizeTypes?.Contains(autholizeType) == true;
     }
 }

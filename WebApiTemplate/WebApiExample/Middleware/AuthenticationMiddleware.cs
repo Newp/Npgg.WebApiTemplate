@@ -22,12 +22,14 @@ namespace WebApiExample.Middleware
         {
             if (metaData != null) return Task.CompletedTask;
 
-            bool authenticated = context.TryGetHeader("access_token", out var accessToken)
-                && authenticationService.CheckAuthentication(accessToken);
+            if(context.TryGetHeader("access_token", out var accessToken) == false
+                ||  authenticationService.CheckAuthentication(accessToken, out var token) == false)
+            {
+                throw new HandledException(HttpStatusCode.Unauthorized, "you shall not pass");
+            }
 
-            if (authenticated) return Task.CompletedTask;
-            
-            throw new HandledException(HttpStatusCode.Unauthorized, "you shall not pass");
+            context.SetItem(token);
+            return Task.CompletedTask;
         }
     }
     

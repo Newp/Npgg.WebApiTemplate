@@ -15,6 +15,8 @@ namespace WebApiExample.Tests
 
     public class UnitTest1 : BaseFixture
     {
+        string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+
         [Fact]
         public async Task GetOkTest()
         {
@@ -63,7 +65,7 @@ namespace WebApiExample.Tests
         }
 
         [Fact]
-        public async Task UnautholizedTest()
+        public async Task UnauthenticatedTest()
         {
             var client = this.GetClient();
 
@@ -72,11 +74,12 @@ namespace WebApiExample.Tests
             Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
+        
+
         [Fact]
-        public async Task AutholizedTest()
+        public async Task AuthenticatedTest()
         {
-            var token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
-            
+
             var client = this.GetClient();
 
             client.DefaultRequestHeaders.Add("access_token", token);
@@ -85,6 +88,47 @@ namespace WebApiExample.Tests
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
+
+
+        [Fact]
+        public async Task AutholizedGetTest()
+        {
+            var client = this.GetClient();
+
+            string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = new AutholizeType[] { AutholizeType.Subscriber } });
+            client.DefaultRequestHeaders.Add("access_token", token); //
+
+            var result = await client.GetAsync("/api/values/autholized");
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task UnautholizedGetTest()
+        {
+            var client = this.GetClient();
+
+            string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = null });
+            client.DefaultRequestHeaders.Add("access_token", token); //
+
+            var result = await client.GetAsync("/api/values/autholized");
+
+            Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
+        }
+
+        //[Fact]
+        //public async Task UnautholizedGetTest()
+        //{
+        //    var token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+
+        //    var client = this.GetClient();
+
+        //    client.DefaultRequestHeaders.Add("access_token", token);
+
+        //    var result = await client.GetAsync("/api/values/autholized");
+
+        //    Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+        //}
 
     }
 }

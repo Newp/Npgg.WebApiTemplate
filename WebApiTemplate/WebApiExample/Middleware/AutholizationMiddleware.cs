@@ -9,7 +9,7 @@ using WebApiExample.Service;
 
 namespace WebApiExample.Middleware
 {
-    public class AutholizationMiddleware : IMiddleware
+    public class AutholizationMiddleware : MetaDataMiddleware<AutholizeAttribute>
     {
         private readonly AutholizationService autholizationService;
 
@@ -18,24 +18,20 @@ namespace WebApiExample.Middleware
             this.autholizationService = autholizationService;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override Task Run(HttpContext context, AutholizeAttribute metaData)
         {
-            var endpoint = context.GetEndpoint();
+            if (metaData == null)
+                return Task.CompletedTask;
 
+            var accessToken = context.GetItem<AccessToken>();
 
-            var list = endpoint.Metadata.GetOrderedMetadata<AutholizeAttribute>();
-
-            foreach (var needAuth in Enumerable.Empty<AutholizeAttribute>())
+            if (this.autholizationService.CheckAutholize(accessToken, metaData.Autholize) == false)
             {
-                if(this.autholizationService.CheckAutholize(needAuth.Autholize)== false)
-                {
-
-                }
+                throw new HandledException(HttpStatusCode.Forbidden);
             }
 
-            await next(context);
+            return Task.CompletedTask;
         }
-
     }
 
     public class AutholizeAttribute : Attribute

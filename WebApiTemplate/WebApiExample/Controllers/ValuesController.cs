@@ -44,5 +44,13 @@ namespace WebApiExample.Controllers
 
 
 
+        [HttpGet("autholized")]
+        [Autholize(AutholizeType.Subscriber)]
+        public string AutholizedGet()
+        {
+            return "autholized ok";
+        }
+
+
     }
 }

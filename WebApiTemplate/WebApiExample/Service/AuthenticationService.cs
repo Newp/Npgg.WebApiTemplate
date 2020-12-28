@@ -8,16 +8,17 @@ namespace WebApiExample.Service
 {
     public class AuthenticationService
     {
-        public bool CheckAuthentication(string accessToken)
+        public bool CheckAuthentication(string accessToken, out AccessToken result)
         {
-            var tokenInfo = JsonSerializer.Deserialize<AccessToken>(accessToken);
+            result = JsonSerializer.Deserialize<AccessToken>(accessToken);
 
-            return tokenInfo.Name != null;
+            return result.Name != null;
         }
     }
 
     public class AccessToken
     {
         public string Name { get; set; }
+        public AutholizeType[] AutholizeTypes { get; set; }
     }
 }
