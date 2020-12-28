@@ -9,32 +9,26 @@ using WebApiExample.Service;
 
 namespace WebApiExample.Middleware
 {
-    public class AuthenticationMiddleware : IMiddleware
+    public class AuthenticationMiddleware : MetaDataMiddleware<AnonymousApiAttribute>, IMiddleware
     {
         private readonly AuthenticationService authenticationService;
 
-        public AuthenticationMiddleware(AuthenticationService authenticationService)
+        public AuthenticationMiddleware(AuthenticationService authenticationService) : base()
         {
             this.authenticationService = authenticationService;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public override Task Run(HttpContext context, AnonymousApiAttribute metaData)
         {
-            var endpoint = context.GetEndpoint();
+            if (metaData != null) return Task.CompletedTask;
 
-            bool isAnonymous = endpoint.Metadata.GetMetadata<AnonymousApiAttribute>() != null;
-
-            bool authenticated = context.Request.Headers.TryGetValue<string>("access_token", out var accessToken)
+            bool authenticated = context.TryGetHeader("access_token", out var accessToken)
                 && authenticationService.CheckAuthentication(accessToken);
 
-            if (isAnonymous == false && authenticated == false)
-            {
-                throw new HandledException(HttpStatusCode.Unauthorized, "you shall not pass");
-            }
-
-            await next(context);
+            if (authenticated) return Task.CompletedTask;
+            
+            throw new HandledException(HttpStatusCode.Unauthorized, "you shall not pass");
         }
-
     }
     
     public class AnonymousApiAttribute : Attribute

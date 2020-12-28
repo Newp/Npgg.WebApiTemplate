@@ -32,6 +32,19 @@ namespace Npgg.Middleware
             return (T)obj;
         }
 
+        public static bool TryGetHeader(this HttpContext context, string key, out string result)
+        {
+            if (context.Request.Headers.TryGetValue(key, out var list) == false || list.Count == 0)
+            {
+                result = default;
+                return false;
+            }
+
+            result = list.First();
+            return true;
+        }
+
+
         public static bool TryGetValue<T>(this IHeaderDictionary header, string key, out T result)
         {
             result = default(T);

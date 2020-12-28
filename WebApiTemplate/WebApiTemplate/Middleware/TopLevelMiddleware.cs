@@ -18,7 +18,7 @@ namespace Npgg.Middleware
 
         public async Task<ApiInvokeResult> Invoke(HttpContext context, RequestDelegate next)
         {
-            Stopwatch watch = new Stopwatch()
+            Stopwatch watch = new Stopwatch();
 
             watch.Restart();
 

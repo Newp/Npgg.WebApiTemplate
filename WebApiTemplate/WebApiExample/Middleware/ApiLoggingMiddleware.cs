@@ -14,12 +14,12 @@ using Newtonsoft.Json;
 
 namespace WebApiExample.Middleware
 {
-    public class TopLevelMiddleware : Npgg.Middleware.TopLevelMiddleware, IMiddleware
+    public class ApiLoggingMiddleware : Npgg.Middleware.TopLevelMiddleware, IMiddleware
     {
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
         
-        public TopLevelMiddleware( LogService logger)
+        public ApiLoggingMiddleware( LogService logger)
         {
             this.logger = logger;
         }

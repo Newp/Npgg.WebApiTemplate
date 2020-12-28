@@ -47,6 +47,9 @@ namespace WebApiExample.Middleware
     {
         public HttpStatusCode StatusCode { get; }
         public object ResponseObject { get; }
+
+        public HandledException(HttpStatusCode statusCode) : this(statusCode, null) { }
+
         public HandledException(HttpStatusCode statusCode, object response)
         {
             this.StatusCode = statusCode;
