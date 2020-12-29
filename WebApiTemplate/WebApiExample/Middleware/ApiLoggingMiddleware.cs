@@ -28,7 +28,7 @@ namespace WebApiExample.Middleware
         static readonly UTF8Encoding encoding = new UTF8Encoding(false);
         private readonly LogService logger;
         
-        public ApiLoggingMiddleware( LogService logger)
+        public ApiLoggingMiddleware(LogService logger)
         {
             this.logger = logger;
         }
@@ -39,34 +39,13 @@ namespace WebApiExample.Middleware
 
             watch.Restart();
 
-            context.Request.EnableBuffering();
-
-            //request scope
-            var requestBuffer = new MemoryStream();
-            await context.Request.BodyReader.CopyToAsync(requestBuffer);
-            context.Request.Body.Position = 0;
-
-            //response scope
-            var clientResponseStream = context.Response.Body;
-            var responseBuffer = new MemoryStream();
-            context.Response.Body = responseBuffer;
-
-            //process api action
             await next(context);
-
-            responseBuffer.Position = 0;
-            await responseBuffer.CopyToAsync(clientResponseStream);
-
-            //await clientResponseStream.WriteAsync(response, 0, response.Length);
 
             watch.Stop();
 
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
-
-            //var metadatas = endpoint.Metadata.ToArray();
-            //var method = endpoint.Metadata.GetMetadata<HttpMethodAttribute>();
-            //var controller = endpoint.Metadata.GetMetadata<RouteAttribute>();
+            var buffer = context.GetItem<RequestResponseBody>() ?? RequestResponseBody.Empty;
 
             var log = new ApiLog()
             {
@@ -75,14 +54,14 @@ namespace WebApiExample.Middleware
                 Request = new RequestLog()
                 {
                     Path = context.Request.Path.Value,
-                    Body = encoding.GetString(requestBuffer.ToArray()),
+                    Body = encoding.GetString(buffer.RequestBody),
                     Headers = JsonConvert.SerializeObject(context.Request.Headers),
                     QueryString = context.Request.QueryString.ToString(),
                     Method = context.Request.Method.ToLower()
                 },
                 Response = new ResponseLog()
                 {
-                    Body = encoding.GetString(responseBuffer.ToArray()),
+                    Body = encoding.GetString(buffer.ResponseBody),
                     Headers = JsonConvert.SerializeObject(context.Response.Headers),
                     Status = context.Response.StatusCode
                 }

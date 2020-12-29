@@ -67,6 +67,7 @@ namespace WebApiExample
             app.UseMiddleware<TryCatchMiddleware>();
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseMiddleware<AutholizationMiddleware>();
+            app.UseMiddleware<BufferMiddleware>();
 
             app.UseAuthorization();
 
