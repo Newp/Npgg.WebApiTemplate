@@ -26,12 +26,11 @@ namespace WebApiExample
 
         public void Write<T>(string subject, T message)
         {
-            this.Write(new LogContext<T>()
-            {
-                Subject = subject,
-                Time = time.GetNow(),
-                Value = message
-            });
+            this.Write(new LogContext<T>(
+                Subject : subject,
+                Time : time.GetNow(),
+                Value : message
+            ));
         }
 
         protected virtual void Write(object message)
@@ -43,10 +42,10 @@ namespace WebApiExample
         }
     }
 
-    public class LogContext<T>
-    {
-        public string Subject { get; set; }
-        public DateTime Time { get; set; }
-        public T Value { get; set; }
-    }
+    public record LogContext<T>(
+    
+        string Subject,
+        DateTime Time,
+        T Value
+    );
 }

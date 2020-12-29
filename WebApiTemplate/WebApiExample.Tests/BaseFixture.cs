@@ -18,7 +18,7 @@ namespace WebApiExample.Tests
                 collection.AddSingleton<LogService, MockLogService>();
             }));
 
-        public T GetService<T>() => this.testServer.Services.GetService<T>();
+        public T GetService<T>() where T : notnull => this.testServer.Services.GetRequiredService<T>();
 
         public string PopLog() => ((MockLogService)this.GetService<LogService>()).Logs.Dequeue();
 

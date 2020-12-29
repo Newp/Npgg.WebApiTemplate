@@ -12,22 +12,18 @@ namespace Npgg.Middleware
     {
         public static void SetItem<T>(this HttpContext httpContext, T Item)
         {
-            var key = typeof(T).FullName!;
-            httpContext.Items[key] = Item;
-        }
-        public static void SetItem(this HttpContext httpContext, object Item)
-        {
-            var key = Item.GetType().FullName!;
+            var key = typeof(T);
             httpContext.Items[key] = Item;
         }
 
         public static T? GetItem<T>(this HttpContext httpContext)
         {
-            var key = typeof(T).FullName;
+            var key = typeof(T);
 
-            if (key == null || httpContext.Items.TryGetValue(key, out var obj) == false)
+            if (httpContext.Items.TryGetValue(key, out var obj) == false)
             {
-                return default(T);
+                return default;
+                //throw new Exception($"context item not found=>{key.FullName}");
             }
 
             return (T)obj;
@@ -48,7 +44,7 @@ namespace Npgg.Middleware
 
         public static bool TryGetValue<T>(this IHeaderDictionary header, string key, out T? result)
         {
-            result = default(T);
+            result = default;
 
             if (header.TryGetValue(key, out var values) == false)
             {

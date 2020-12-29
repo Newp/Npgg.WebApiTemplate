@@ -44,7 +44,7 @@ namespace WebApiExample.Middleware
 
             await next(context);
 
-            var proceed = context.GetItem<RequestResponseResult>()!;
+            var proceed = context.GetItem<RequestResponseResult>();
 
             idempotentService.Set(requestId, proceed);
         }

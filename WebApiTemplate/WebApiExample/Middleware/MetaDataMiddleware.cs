@@ -12,7 +12,7 @@ namespace Npgg.Middleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var endpoint = context.GetEndpoint()!;
+            var endpoint = context.GetEndpoint() ?? throw new Exception();
 
             var metaData = endpoint.Metadata.GetMetadata<T>();
 
@@ -23,4 +23,9 @@ namespace Npgg.Middleware
 
         public abstract Task Run(HttpContext context, T? metaData);
     }
+
+    //public class NullableException
+    //{
+        
+    //}
 }
