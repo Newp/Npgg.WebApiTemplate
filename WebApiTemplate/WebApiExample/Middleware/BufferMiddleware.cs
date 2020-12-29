@@ -25,13 +25,13 @@ namespace WebApiExample.Middleware
             context.Request.EnableBuffering();
 
             //request scope
-            var requestBuffer = new MemoryStream();
+            using var requestBuffer = new MemoryStream();
             await context.Request.BodyReader.CopyToAsync(requestBuffer);
             context.Request.Body.Position = 0;
 
             //response scope
             var clientResponseStream = context.Response.Body;
-            var responseBuffer = new MemoryStream();
+            using var responseBuffer = new MemoryStream();
             context.Response.Body = responseBuffer;
 
             //process api action
