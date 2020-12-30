@@ -18,7 +18,7 @@ namespace WebApiExample.Middleware
             this.authenticationService = authenticationService;
         }
 
-        public override Task Run(HttpContext context, AnonymousApiAttribute metaData)
+        public override Task Run(HttpContext context, AnonymousApiAttribute? metaData)
         {
             if (metaData != null) return Task.CompletedTask;
 

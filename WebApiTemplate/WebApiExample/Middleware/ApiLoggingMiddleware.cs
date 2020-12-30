@@ -13,6 +13,7 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace WebApiExample.Middleware
 {
@@ -47,52 +48,44 @@ namespace WebApiExample.Middleware
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
             var buffer = context.GetItem<RequestResponseResult>() ?? RequestResponseResult.Empty;
 
-            var log = new ApiLog()
-            {
-                Elapsed = watch.ElapsedMilliseconds,
-                ApiPattern = actionDescriptor?.AttributeRouteInfo.Template,
-                Request = new RequestLog()
-                {
-                    Path = context.Request.Path.Value,
-                    Body = encoding.GetString(buffer.RequestBody),
-                    Headers = JsonConvert.SerializeObject(context.Request.Headers),
-                    QueryString = context.Request.QueryString.ToString(),
-                    Method = context.Request.Method.ToLower()
-                },
-                Response = new ResponseLog()
-                {
-                    Body = encoding.GetString(buffer.ResponseBody),
-                    Headers = JsonConvert.SerializeObject(context.Response.Headers),
-                    Status = context.Response.StatusCode
-                }
-            };
+            var log = new ApiLog
+            (
+                Elapsed: watch.ElapsedMilliseconds,
+                ApiPattern: actionDescriptor?.AttributeRouteInfo?.Template,
+                new RequestLog(
+                    Path : context.Request.Path.Value,
+                    Method: encoding.GetString(buffer.RequestBody),
+                    Headers: JsonConvert.SerializeObject(context.Request.Headers),
+                    QueryString: context.Request.QueryString.ToString(),
+                    context.Request.Method.ToLower()
+                ),
+                new ResponseLog(
+                    context.Response.StatusCode,
+                    JsonConvert.SerializeObject(context.Response.Headers),
+                    encoding.GetString(buffer.ResponseBody)
+                )
+            );
 
             logger.Write("api_result", log);
         }
     }
 
-    public class ApiLog
-    {
-        public long Elapsed { get;  set; }
-        public string ApiPattern { get; set; }
-        public RequestLog Request { get; set; }
-        public ResponseLog Response { get; set; }
-    }
+    public record ApiLog(long Elapsed, string ApiPattern, RequestLog Request, ResponseLog Response);
 
-    public class RequestLog
-    {
-        public string Path { get; set; }
-        public string Method { get; set; }
-        public string Headers { get; set; }
-        public string QueryString { get; set; }
-        public string Body { get; set; }
-    }
+    public record RequestLog
+    (
+        string Path ,
+        string Method ,
+        string Headers ,
+        string QueryString ,
+        string Body
+    );
 
 
-    public class ResponseLog
-    {
-        public int Status { get; set; }
-        public string Headers { get; set; }
-        public string Body { get; set; }
-    }
+    public record ResponseLog
+    (
+        [property : JsonProperty("status")] int Status ,
+        [property : JsonProperty("headers")] string Headers ,
+        [property : JsonProperty("body")] string Body
+    );
 }
