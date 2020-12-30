@@ -30,7 +30,7 @@ namespace WebApiExample.Controllers
 
         [HttpGet("{id}")]
         [AnonymousApi]
-        public string Get(int id, [FromQuery] string pass)
+        public string Get(int id, [FromQuery] string? pass) //nullable 상태로 안할때 RequestQuery 
         {
             return $"value>{id}, pass:{pass}";
         }

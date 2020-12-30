@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,20 +12,20 @@ namespace Npgg.Middleware
     {
         public static void SetItem<T>(this HttpContext httpContext, T Item)
         {
-            var key = typeof(T).FullName;
+            var key = typeof(T).FullName!;
             httpContext.Items[key] = Item;
         }
         public static void SetItem(this HttpContext httpContext, object Item)
         {
-            var key = Item.GetType().FullName;
+            var key = Item.GetType().FullName!;
             httpContext.Items[key] = Item;
         }
 
-        public static T GetItem<T>(this HttpContext httpContext)
+        public static T? GetItem<T>(this HttpContext httpContext)
         {
             var key = typeof(T).FullName;
 
-            if (httpContext.Items.TryGetValue(key, out var obj) == false)
+            if (key == null || httpContext.Items.TryGetValue(key, out var obj) == false)
             {
                 return default(T);
             }
@@ -32,7 +33,7 @@ namespace Npgg.Middleware
             return (T)obj;
         }
 
-        public static bool TryGetHeader(this HttpContext context, string key, out string result)
+        public static bool TryGetHeader(this HttpContext context, string key, [NotNullWhen(returnValue: true)] out string? result)
         {
             if (context.Request.Headers.TryGetValue(key, out var list) == false || list.Count == 0)
             {
@@ -45,7 +46,7 @@ namespace Npgg.Middleware
         }
 
 
-        public static bool TryGetValue<T>(this IHeaderDictionary header, string key, out T result)
+        public static bool TryGetValue<T>(this IHeaderDictionary header, string key, out T? result)
         {
             result = default(T);
 

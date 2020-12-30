@@ -12,7 +12,7 @@ namespace Npgg.Middleware
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var endpoint = context.GetEndpoint();
+            var endpoint = context.GetEndpoint()!;
 
             var metaData = endpoint.Metadata.GetMetadata<T>();
 
@@ -21,6 +21,6 @@ namespace Npgg.Middleware
             await next(context);
         }
 
-        public abstract Task Run(HttpContext context, T metaData);
+        public abstract Task Run(HttpContext context, T? metaData);
     }
 }
