@@ -3,6 +3,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using System;
+using System.Text;
 
 namespace WebApiExample.Tests
 {
@@ -23,5 +25,15 @@ namespace WebApiExample.Tests
         public LogContext<T> PopLog<T>() => JsonSerializer.Deserialize<LogContext<T>>(this.PopLog());
 
         public HttpClient GetClient() => this.testServer.CreateClient();
+
+        public Encoding encoding = new UTF8Encoding(false);
+
+        public StringContent CreateContent(string body)
+        {
+            var content = new StringContent(body, encoding, "application/json");
+            content.Headers.Add("request-id", Guid.NewGuid().ToString());
+
+            return content;
+        }
     }
 }

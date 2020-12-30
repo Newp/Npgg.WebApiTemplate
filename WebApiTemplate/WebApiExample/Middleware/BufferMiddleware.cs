@@ -42,6 +42,7 @@ namespace WebApiExample.Middleware
 
             context.SetItem(new RequestResponseBody()
             {
+                HttpStatusCode = context.Response.StatusCode,
                 RequestBody = requestBuffer.ToArray(),
                 ResponseBody = responseBuffer.ToArray(),
             }); 
@@ -52,10 +53,12 @@ namespace WebApiExample.Middleware
     {
         public static readonly RequestResponseBody Empty = new RequestResponseBody()
         {
+            HttpStatusCode = 0,
             RequestBody = Array.Empty<byte>(),
             ResponseBody = Array.Empty<byte>(),
         };
 
+        public int HttpStatusCode { get; set; }
         public byte[] RequestBody { get; set; }
         public byte[] ResponseBody { get; set; }
     }

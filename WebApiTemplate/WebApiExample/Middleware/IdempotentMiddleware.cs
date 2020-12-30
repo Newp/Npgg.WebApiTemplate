@@ -35,12 +35,20 @@ namespace WebApiExample.Middleware
                 throw new HandledException(HttpStatusCode.BadRequest, "idempotent request need 'request-id'");
             }
 
+            var cached = idempotentService.Get(requestId) as RequestResponseBody;
+
+            if(cached != null)
+            {
+                context.Response.StatusCode = cached.HttpStatusCode;
+                await context.Response.Body.WriteAsync(cached.ResponseBody);
+                return;
+            }
 
             await next(context);
-            var rrr = context.GetItem<RequestResponseBody>();
 
+            var proceed = context.GetItem<RequestResponseBody>();
 
-
+            idempotentService.Set(requestId, proceed);
         }
     }
 }

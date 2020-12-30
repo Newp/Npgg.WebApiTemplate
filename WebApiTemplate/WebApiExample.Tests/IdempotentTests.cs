@@ -5,6 +5,7 @@ using System.Net;
 using WebApiExample.Service;
 using System.Text.Json;
 using System.Net.Http;
+using WebApiExample.Controllers;
 
 namespace WebApiExample.Tests
 {
@@ -19,15 +20,44 @@ namespace WebApiExample.Tests
             string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
 
             client.DefaultRequestHeaders.Add("access_token", token);
+            ValuesController.post = 0; //테스트용으로 초기화해줌
         }
 
         [Fact]
-        public async Task RequestIdBadRequest()
+        public async Task NoRequestIdBadRequest()
         {
             var path = "/api/values";
             var result = await client.PostAsync(path, new StringContent(""));
 
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task IdempotentOk()
+        {
+            var path = "/api/values";
+
+            //첫번째 요청
+            {
+                var content = base.CreateContent("test");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    var response = await client.PostAsync(path, content);
+
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    Assert.Equal("1", await response.Content.ReadAsStringAsync());
+                }
+            }
+
+            //두번째 요청
+            {
+                var content = base.CreateContent("test");
+                var response = await client.PostAsync(path, content);
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal("2", await response.Content.ReadAsStringAsync());
+            }
         }
     }
 }
