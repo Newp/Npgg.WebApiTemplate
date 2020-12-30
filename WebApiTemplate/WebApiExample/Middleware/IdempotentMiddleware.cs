@@ -9,7 +9,7 @@ using WebApiExample.Service;
 
 namespace WebApiExample.Middleware
 {
-    public class IdempotentMiddleware : MetaDataMiddleware<UseIdempotent>
+    public class IdempotentMiddleware :IMiddleware
     {
         private readonly IdempotentService idempotentService;
 
@@ -17,20 +17,29 @@ namespace WebApiExample.Middleware
         {
             this.idempotentService = idempotentService;
         }
-        
-        public override async Task Run(HttpContext context, UseIdempotent metaData)
+
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            //post는 기본적으로 활성화, 그 외의 method 들은 UseIdempotent 메타데이터의 유무로 사용
             const string postMethod = "post";
-            if (context.Request.Method.ToLower() == postMethod || metaData != null)
+            var useIdempotent = context.Request.Method.ToLower() == postMethod ||
+                context.GetEndpoint()?.Metadata.GetMetadata<UseIdempotent>() != null;
+            
+            if (useIdempotent == false)
             {
+                await next(context);
                 return;
             }
 
-            if ( context.TryGetHeader("request-id", out var requestId) == false)
+            if (context.TryGetHeader("request-id", out var requestId) == false)
             {
                 throw new HandledException(HttpStatusCode.BadRequest, "idempotent request need 'request-id'");
             }
+
+
+            await next(context);
+            var rrr = context.GetItem<RequestResponseBody>();
+
+
 
         }
     }

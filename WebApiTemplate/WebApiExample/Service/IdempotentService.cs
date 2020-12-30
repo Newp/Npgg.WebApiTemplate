@@ -12,12 +12,18 @@ namespace WebApiExample.Service
     public class IdempotentService
     {
         MemoryCache cache = new MemoryCache("cache_service");
-        
-        public void Set<T>(string requestId, T value, TimeService expire)
+        CacheItemPolicy policy = new CacheItemPolicy
         {
-            var content = JsonConvert.SerializeObject(value);
+            SlidingExpiration = TimeSpan.FromSeconds(100), //100초까지만 기다린다.
+        };
 
-            
+        public void Set(string requestId, object value)
+        {
+            //var content = JsonConvert.SerializeObject(value);
+
+            cache.Set(requestId, value, policy);
         }
+
+        public object Get(string requestId) => cache.Get(requestId);
     }
 }

@@ -2,7 +2,6 @@ using System;
 using Xunit;
 
 using WebApiExample;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using WebApiExample.Middleware;
 using System.Net;
@@ -33,17 +32,6 @@ namespace WebApiExample.Tests
         }
 
 
-        [Fact]
-        public async Task PostOkTest()
-        {
-            string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test", AutholizeTypes = null });
-            client.DefaultRequestHeaders.Add("access_token", token); //
-
-            var path = "/api/values";
-            var result = await client.PostAsync(path, new StringContent(""));
-
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        }
 
         [Fact]
         public async Task ApiPathLogTest()
@@ -120,19 +108,17 @@ namespace WebApiExample.Tests
             Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         }
 
-        //[Fact]
-        //public async Task UnautholizedGetTest()
-        //{
-        //    var token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+        
 
-        //    var client = this.GetClient();
 
-        //    client.DefaultRequestHeaders.Add("access_token", token);
+        [Fact]
+        public async Task fdasdfdsa()
+        {
+            IdempotentService service = new IdempotentService();
 
-        //    var result = await client.GetAsync("/api/values/autholized");
-
-        //    Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-        //}
+            string key = "asdffadafds";
+            var obj = service.Get(key);
+        }
 
     }
 }
