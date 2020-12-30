@@ -45,7 +45,7 @@ namespace WebApiExample.Middleware
 
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
-            var buffer = context.GetItem<RequestResponseBody>() ?? RequestResponseBody.Empty;
+            var buffer = context.GetItem<RequestResponseResult>() ?? RequestResponseResult.Empty;
 
             var log = new ApiLog()
             {

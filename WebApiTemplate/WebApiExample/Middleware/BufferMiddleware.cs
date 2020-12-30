@@ -16,9 +16,9 @@ using System.IO;
 
 namespace WebApiExample.Middleware
 {
-    public class BufferMiddleware :  IMiddleware
+    public class BufferMiddleware : IMiddleware
     {
-        
+
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -40,27 +40,13 @@ namespace WebApiExample.Middleware
             responseBuffer.Position = 0;
             await responseBuffer.CopyToAsync(clientResponseStream);
 
-            context.SetItem(new RequestResponseBody()
-            {
-                HttpStatusCode = context.Response.StatusCode,
-                RequestBody = requestBuffer.ToArray(),
-                ResponseBody = responseBuffer.ToArray(),
-            }); 
+            context.SetItem(new RequestResponseResult(context.Response.StatusCode, requestBuffer.ToArray(), responseBuffer.ToArray()));
         }
     }
 
-    public class RequestResponseBody
+    public record RequestResponseResult(int HttpStatusCode, byte[] RequestBody, byte[] ResponseBody)
     {
-        public static readonly RequestResponseBody Empty = new RequestResponseBody()
-        {
-            HttpStatusCode = 0,
-            RequestBody = Array.Empty<byte>(),
-            ResponseBody = Array.Empty<byte>(),
-        };
-
-        public int HttpStatusCode { get; set; }
-        public byte[] RequestBody { get; set; }
-        public byte[] ResponseBody { get; set; }
+        public static readonly RequestResponseResult Empty = new RequestResponseResult(0, Array.Empty<byte>(), Array.Empty<byte>());
     }
 
 }
