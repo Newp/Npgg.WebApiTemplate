@@ -20,7 +20,7 @@ namespace WebApiExample.Tests
             string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
 
             client.DefaultRequestHeaders.Add("access_token", token);
-            ValuesController.post = 0; //테스트용으로 초기화해줌
+            ValuesController.PostCount = 0; //테스트용으로 초기화해줌
         }
 
         [Fact]

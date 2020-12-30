@@ -35,10 +35,10 @@ namespace WebApiExample.Middleware
                     await context.Response.WriteAsync(handledExceptionBody);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 context.Response.StatusCode = 503;//internal server error
-                //logger.WriteError
+                //로그를 추가한다.
             }
         }
     }

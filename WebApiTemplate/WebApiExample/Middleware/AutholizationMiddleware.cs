@@ -34,6 +34,7 @@ namespace WebApiExample.Middleware
         }
     }
 
+    [AttributeUsage( AttributeTargets.Class | AttributeTargets.Method)]
     public class AutholizeAttribute : Attribute
     {
         public AutholizeAttribute(AutholizeType autholize)

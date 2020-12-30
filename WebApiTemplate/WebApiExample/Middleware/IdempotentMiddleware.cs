@@ -35,9 +35,7 @@ namespace WebApiExample.Middleware
                 throw new HandledException(HttpStatusCode.BadRequest, "idempotent request need 'request-id'");
             }
 
-            var cached = idempotentService.Get(requestId) as RequestResponseBody;
-
-            if(cached != null)
+            if (idempotentService.Get(requestId) is RequestResponseBody cached)
             {
                 context.Response.StatusCode = cached.HttpStatusCode;
                 await context.Response.Body.WriteAsync(cached.ResponseBody);

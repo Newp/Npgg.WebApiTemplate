@@ -11,8 +11,8 @@ namespace WebApiExample.Service
 {
     public class IdempotentService
     {
-        MemoryCache cache = new MemoryCache("cache_service");
-        CacheItemPolicy policy = new CacheItemPolicy
+        readonly MemoryCache cache = new MemoryCache("cache_service");
+        readonly CacheItemPolicy policy = new CacheItemPolicy
         {
             SlidingExpiration = TimeSpan.FromSeconds(100), //100초까지만 기다린다.
         };

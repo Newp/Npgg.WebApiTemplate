@@ -51,8 +51,9 @@ namespace WebApiExample.Controllers
             return "autholized ok";
         }
 
-        public static int post = 0;
+        public static int PostCount { get; set; }
+
         [HttpPost]
-        public int Post() => ++post;
+        public int Post() => ++PostCount;
     }
 }

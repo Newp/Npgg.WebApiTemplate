@@ -15,7 +15,7 @@ namespace WebApiExample.Tests
 
     public class UnitTest1 : BaseFixture
     {
-        string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+        readonly string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
         readonly HttpClient client;
         public UnitTest1()
         {
@@ -107,18 +107,5 @@ namespace WebApiExample.Tests
 
             Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         }
-
-        
-
-
-        [Fact]
-        public async Task fdasdfdsa()
-        {
-            IdempotentService service = new IdempotentService();
-
-            string key = "asdffadafds";
-            var obj = service.Get(key);
-        }
-
     }
 }
