@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApiExample.Middleware
 {
@@ -34,7 +35,7 @@ namespace WebApiExample.Middleware
             this.logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync([NotNull] HttpContext context, RequestDelegate next)
         {
             Stopwatch watch = new Stopwatch();
 
@@ -44,20 +45,22 @@ namespace WebApiExample.Middleware
 
             watch.Stop();
 
+            bool isSuccess = context.Response.StatusCode > 199 && context.Response.StatusCode < 205;
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
             var buffer = context.GetItem<RequestResponseResult>() ?? RequestResponseResult.Empty;
 
+            var request = context.Request;
             var log = new ApiLog
             (
                 Elapsed: watch.ElapsedMilliseconds,
                 ApiPattern: actionDescriptor?.AttributeRouteInfo?.Template,
                 new RequestLog(
-                    Path : context.Request.Path.Value,
-                    Method: encoding.GetString(buffer.RequestBody),
-                    Headers: JsonConvert.SerializeObject(context.Request.Headers),
-                    QueryString: context.Request.QueryString.ToString(),
-                    context.Request.Method.ToLower()
+                    Path : request.Path.ToString(),
+                    Method: request.Method.ToLower(),
+                    Body : encoding.GetString(buffer.RequestBody),
+                    Headers: JsonConvert.SerializeObject(request.Headers),
+                    QueryString: request.QueryString.ToString()
                 ),
                 new ResponseLog(
                     context.Response.StatusCode,
@@ -70,7 +73,7 @@ namespace WebApiExample.Middleware
         }
     }
 
-    public record ApiLog(long Elapsed, string ApiPattern, RequestLog Request, ResponseLog Response);
+    public record ApiLog(long Elapsed, string? ApiPattern, RequestLog Request, ResponseLog Response);
 
     public record RequestLog
     (

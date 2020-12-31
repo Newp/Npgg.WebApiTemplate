@@ -46,11 +46,11 @@ namespace WebApiExample.Middleware
     public class HandledException : Exception
     {
         public HttpStatusCode StatusCode { get; }
-        public object ResponseObject { get; }
+        public object? ResponseObject { get; }
 
         public HandledException(HttpStatusCode statusCode) : this(statusCode, null) { }
 
-        public HandledException(HttpStatusCode statusCode, object response)
+        public HandledException(HttpStatusCode statusCode, object? response)
         {
             this.StatusCode = statusCode;
             this.ResponseObject = response;

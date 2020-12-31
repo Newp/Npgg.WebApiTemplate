@@ -46,6 +46,9 @@ namespace WebApiExample
             services.AddSingleton<AuthenticationService>();
             services.AddSingleton<AutholizationService>();
             services.AddSingleton<IdempotentService>();
+
+            services.AddScoped<AuthenticationInfo>();
+            
         }
 
 

@@ -28,6 +28,17 @@ namespace Npgg.Middleware
 
             return (T)obj;
         }
+        public static T GetRequiredItem<T>(this HttpContext httpContext) where T : notnull
+        {
+            var key = typeof(T);
+
+            if (httpContext.Items.TryGetValue(key, out var obj) == false || obj == null)
+            {
+                throw new Exception($"context item not found=>{key.FullName}");
+            }
+
+            return (T)obj;
+        }
 
         public static bool TryGetHeader(this HttpContext context, string key, [NotNullWhen(returnValue: true)] out string? result)
         {

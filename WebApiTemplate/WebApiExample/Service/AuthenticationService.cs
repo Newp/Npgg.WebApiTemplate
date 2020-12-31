@@ -12,13 +12,13 @@ namespace WebApiExample.Service
         {
             result = JsonSerializer.Deserialize<AccessToken>(accessToken);
 
-            return result.Name != null;
+            return result?.Name != null;
         }
     }
 
     public class AccessToken
     {
-        public string Name { get; set; }
-        public AutholizeType[] AutholizeTypes { get; set; }
+        public string? Name { get; set; }
+        public AutholizeType[]? AutholizeTypes { get; set; }
     }
 }

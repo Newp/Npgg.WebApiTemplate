@@ -23,7 +23,7 @@ namespace WebApiExample.Middleware
             if (metaData == null)
                 return Task.CompletedTask;
 
-            var accessToken = context.GetItem<AccessToken>();
+            var accessToken = context.GetRequiredItem<AccessToken>();
 
             if (this.autholizationService.CheckAutholize(accessToken, metaData.Autholize) == false)
             {
