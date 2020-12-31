@@ -18,7 +18,7 @@ namespace WebApiExample.Middleware
             this.autholizationService = autholizationService;
         }
 
-        public override Task Run(HttpContext context, AutholizeAttribute metaData)
+        public override Task Run(HttpContext context, AutholizeAttribute? metaData)
         {
             if (metaData == null)
                 return Task.CompletedTask;

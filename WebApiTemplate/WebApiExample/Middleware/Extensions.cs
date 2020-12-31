@@ -34,7 +34,7 @@ namespace Npgg.Middleware
 
             if (httpContext.Items.TryGetValue(key, out var obj) == false || obj == null)
             {
-                throw new Exception($"context item not found=>{key.FullName}");
+                throw new Exception($"required context item not found=>{key.FullName}");
             }
 
             return (T)obj;

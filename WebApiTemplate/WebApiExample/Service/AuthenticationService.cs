@@ -10,7 +10,7 @@ namespace WebApiExample.Service
     {
         public bool CheckAuthentication(string accessToken, out AccessToken result)
         {
-            result = JsonSerializer.Deserialize<AccessToken>(accessToken);
+            result = Newtonsoft.Json.JsonConvert.DeserializeObject<AccessToken>(accessToken);
 
             return result?.Name != null;
         }
