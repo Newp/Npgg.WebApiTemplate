@@ -26,8 +26,11 @@ namespace WebApiExample.Tests
             //throw new NotImplementedException();
         }
         public T GetService<T>() where T : notnull => this.testServer.Services.GetRequiredService<T>();
+        public T2 GetService<T, T2>() where T : notnull where T2: T => (T2)this.testServer.Services.GetRequiredService<T>();
 
-        public string PopLog() => ((MockLogService)this.GetService<LogService>()).Logs.Dequeue();
+        public MockLogService Logs => this.GetService<LogService, MockLogService>();
+
+        public string PopLog() => Logs.Logs.Dequeue();
 
         public LogContext<T> PopLog<T>() => JsonConvert.DeserializeObject<LogContext<T>>(this.PopLog());
 
