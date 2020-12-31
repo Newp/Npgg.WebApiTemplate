@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -18,7 +19,8 @@ namespace WebApiExample.Service
 
     public class AccessToken
     {
-        public string? Name { get; set; }
+        [JsonRequired]
+        public string Name { get; set; } = string.Empty;
         public AutholizeType[]? AutholizeTypes { get; set; }
     }
 }

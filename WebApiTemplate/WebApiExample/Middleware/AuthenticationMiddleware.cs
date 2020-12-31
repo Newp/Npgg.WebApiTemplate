@@ -32,7 +32,7 @@ namespace WebApiExample.Middleware
             }
 
 
-            authenticationInfo.SetAuthentication();
+            authenticationInfo.SetAuthentication(token);
             context.SetItem(token);
             return Task.CompletedTask;
         }
@@ -45,17 +45,29 @@ namespace WebApiExample.Middleware
 
     public class AuthenticationInfo
     {
-        public bool IsAuthenticated { get; private set; }
+        public bool IsAuthenticated => this.accessToken != null;
 
-        public void SetAuthentication()
+        AccessToken? accessToken;
+        public void SetAuthentication(AccessToken accessToken)
         {
-            this.IsAuthenticated = true;
+            this.accessToken = accessToken; 
+        }
+
+        public UserInfo GetUserInfo()
+        {
+            if(IsAuthenticated == false) throw new Exception("not authenticated");
+
+            return new UserInfo()
+            {
+                Id = new Random().Next(1, 10000000),
+                Name = this.accessToken!.Name
+            };
         }
     }
 
     public class UserInfo
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 }

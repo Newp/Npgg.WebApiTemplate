@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Tests
 {
@@ -22,7 +23,7 @@ namespace WebApiExample.Tests
 
         public string PopLog() => ((MockLogService)this.GetService<LogService>()).Logs.Dequeue();
 
-        public LogContext<T> PopLog<T>() => JsonSerializer.Deserialize<LogContext<T>>(this.PopLog());
+        public LogContext<T> PopLog<T>() => JsonConvert.DeserializeObject<LogContext<T>>(this.PopLog());
 
         public HttpClient GetClient() => this.testServer.CreateClient();
 
