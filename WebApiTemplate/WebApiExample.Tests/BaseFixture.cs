@@ -9,8 +9,10 @@ using Newtonsoft.Json;
 
 namespace WebApiExample.Tests
 {
-    public class BaseFixture
+    public class BaseFixture : IDisposable
     {
+        public Guid Guid = Guid.NewGuid();
+
         public TestServer testServer = new TestServer(new WebHostBuilder()
             .UseStartup<Startup>()
             .ConfigureTestServices(collection =>
@@ -19,6 +21,10 @@ namespace WebApiExample.Tests
                 collection.AddSingleton<LogService, MockLogService>();
             }));
 
+        public void Dispose()
+        {
+            //throw new NotImplementedException();
+        }
         public T GetService<T>() where T : notnull => this.testServer.Services.GetRequiredService<T>();
 
         public string PopLog() => ((MockLogService)this.GetService<LogService>()).Logs.Dequeue();
@@ -36,5 +42,7 @@ namespace WebApiExample.Tests
 
             return content;
         }
+
+       
     }
 }
