@@ -42,7 +42,6 @@ namespace WebApiExample
             }
 
             services.AddSingleton<LogService>();
-            services.AddSingleton<TimeService>();
             services.AddSingleton<AuthenticationService>();
             services.AddSingleton<AutholizationService>();
             services.AddSingleton<IdempotentService>();

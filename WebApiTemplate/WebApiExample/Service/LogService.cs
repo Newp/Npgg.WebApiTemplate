@@ -1,49 +1,46 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace WebApiExample
 {
-    public class TimeService
-    {
-        public virtual DateTime GetNow() => DateTime.Now;
-    }
-
     public class LogService
     {
-        private readonly ILogger logger;
-        private readonly TimeService time;
 
-        public LogService(ILoggerProvider provider, TimeService time)
+        public void Trace<T>(string subject, T value) where T : notnull => this.Write(LogLevel.Trace, subject, value);
+        public void Debug<T>(string subject, T value) where T : notnull =>  this.Write(LogLevel.Debug, subject, value);
+        public void Information<T>(string subject, T value) where T : notnull =>  this.Write(LogLevel.Information, subject, value);
+        public void Warning<T>(string subject, T value) where T : notnull =>  this.Write(LogLevel.Warning, subject, value);
+        public void Error<T>(string subject, T value) where T : notnull =>  this.Write(LogLevel.Error, subject, value);
+        public void Critical<T>(string subject, T value) where T : notnull =>  this.Write(LogLevel.Critical, subject, value);
+
+        public virtual void Write<T>(LogLevel logLevel, string subject, T message) where T : notnull
         {
-            this.logger = provider?.CreateLogger("test");
-            //this.logger = logger;
-            this.time = time;
+            var log = MakeLog(logLevel,  subject, message);
+            var json = JsonSerializer.Serialize(log);
+            Console.WriteLine(json);
         }
 
-        public void Write<T>(string subject, T message)
+        protected LogContext<T> MakeLog<T>(LogLevel logLevel, string subject, T value) where T : notnull
         {
-            this.Write(new LogContext<T>(
+            var time = DateTime.Now;
+            var log = new LogContext<T>(
+                LogLevel : logLevel,
                 Subject : subject,
-                Time : time.GetNow(),
-                Value : message
-            ));
-        }
-
-        protected virtual void Write(object message)
-        {
-            var json = JsonSerializer.Serialize(message);
-
-            logger.LogDebug(json);
-            //Console.WriteLine(json);
+                Time : time,
+                Value : value
+            );
+            return log;
         }
     }
 
+
     public record LogContext<T>(
-    
+        LogLevel LogLevel,
         string Subject,
         DateTime Time,
         T Value

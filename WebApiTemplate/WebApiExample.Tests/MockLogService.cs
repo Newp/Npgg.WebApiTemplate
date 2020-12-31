@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Tests
 {
@@ -7,15 +9,14 @@ namespace WebApiExample.Tests
     {
         public Queue<string> Logs = new Queue<string>();
 
-        public MockLogService(TimeService time) : base(null, time)
+        public override void Write<T>(LogLevel logLevel, string subject, T message)
         {
-        }
+            var log = base.MakeLog(logLevel, subject, message);
 
-        protected override void Write(object message)
-        {
-            var json = JsonSerializer.Serialize(message);
+            var json = JsonConvert.SerializeObject(log);
             Logs.Enqueue(json);
-            System.Diagnostics.Trace.WriteLine(json);
+            //System.Diagnostics.Trace.WriteLine(json);
+            base.Write(logLevel, subject, message);
         }
     }
 }

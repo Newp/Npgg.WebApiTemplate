@@ -16,6 +16,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Diagnostics.CodeAnalysis;
 
+
 namespace WebApiExample.Middleware
 {
     public struct ApiInvokeResult
@@ -69,7 +70,7 @@ namespace WebApiExample.Middleware
                 )
             );
 
-            logger.Write("api_result", log);
+            logger.Debug("api_result", log);
         }
     }
 
