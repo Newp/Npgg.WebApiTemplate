@@ -1,5 +1,61 @@
 # Npgg.WebApiTemplate
  닷넷코어로 web api 를 만들때 자주 사용하는 유형들에 대해 정리
+
+
+
+WIP : 작성중
+
+
+## Middleware의 목적
+
+하나의 request에 대한 흐름을 제어하기 위해서는 굳이 Middleware 없이도 동작이 가능하다.
+
+하지만 그 기능이 많아질수록 하나의 함수에서 이를 제어하기가 복잡해지기 때문에 이를 Middleware 단위로 분리하여 각각 필요한 기능을 수행하도록 분리한다.
+
+Middleware에는 실행 전 작업(pre processing), 실행 후 작업(post proccessing) 으로 나뉜다.
+
+```csharp
+public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+{
+   // 여기에 pre process 
+   await next(context);
+   // 여기에 post process
+}
+```
+
+실행 전 작업 : 실제로 사용자가 해당 api를 사용할 수 있는지, 또는 서버가 가능한 상태인지를 검사한다. 이 경우 api의 동작을 막을 수 있다.
+ex1) 사용자가 정상적인 인증을 거친 이용자인지 검사
+ex2) 서버가 현재 동작이 가능한 상태인지, 특정 기능이 점검중인지 선행검사
+
+실행 후 작업 : api가 동작한 후에 마무리작업, 이 경우 api의 실행을 막을 수 없다.
+ex1) api가 실행된 후에 request/response에 대한 log를 남긴다.
+ex2) idempotent를 지킬수 있도록 실행 후 결과값을 별도로 저장한다.
+
+
+## Middleware의 순서
+
+pre/post 처리 여부에 따라서 선택한다.
+
+다만 Stack처럼 A,B,C 세개의 middleware에서 InvokeAsync가 수행될 때, 아래처럼 수행된다.
+
+
+
+
+A => B => C => (API ROUTE) => C => B => A
+
+위 순서처럼 먼저넣은대로 넣은 순서의 역순으로 마무리가 된다. 
+
+## 각 Middleware 의 기능
+
+ApiLoggingMiddleware
+TryCatchMiddleware
+AuthenticationMiddleware
+IdempotentMiddleware
+AutholizationMiddleware
+BufferMiddleware
+
+### ApiLogMiddleware
+
  
 
 ### 결과기록, AfterResponseMiddleware
