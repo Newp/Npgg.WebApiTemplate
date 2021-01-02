@@ -51,6 +51,12 @@ namespace WebApiExample.Controllers
             return "autholized ok";
         }
 
+
+
+        [HttpPost("exception")]
+        [AnonymousApi]
+        public string GetException([FromBody] string message) => throw new Exception(message);
+
         public static int PostCount { get; set; }
 
         [HttpPost]

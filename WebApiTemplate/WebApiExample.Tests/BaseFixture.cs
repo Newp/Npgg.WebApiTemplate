@@ -40,7 +40,8 @@ namespace WebApiExample.Tests
 
         public StringContent CreateContent(string body)
         {
-            var content = new StringContent(body, encoding, "application/json");
+            var json = JsonConvert.SerializeObject(body);
+            var content = new StringContent(json, encoding, "application/json");
             content.Headers.Add("request-id", Guid.NewGuid().ToString());
 
             return content;

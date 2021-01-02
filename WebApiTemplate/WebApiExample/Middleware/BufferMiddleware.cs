@@ -35,12 +35,22 @@ namespace WebApiExample.Middleware
             context.Response.Body = responseBuffer;
 
             //process api action
-            await next(context);
+            try
+            {
+                await next(context);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                responseBuffer.Position = 0;
+                await responseBuffer.CopyToAsync(clientResponseStream);
 
-            responseBuffer.Position = 0;
-            await responseBuffer.CopyToAsync(clientResponseStream);
+                context.SetItem(new RequestResponseResult(context.Response.StatusCode, requestBuffer.ToArray(), responseBuffer.ToArray()));
+            }
 
-            context.SetItem(new RequestResponseResult(context.Response.StatusCode, requestBuffer.ToArray(), responseBuffer.ToArray()));
         }
     }
 
