@@ -37,7 +37,7 @@ namespace WebApiExample.Middleware
             }
             catch (Exception)
             {
-                context.Response.StatusCode = 503;//internal server error
+                context.Response.StatusCode = 500;//internal server error
                 //로그를 추가한다.
             }
         }
