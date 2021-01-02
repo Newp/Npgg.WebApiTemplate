@@ -45,32 +45,18 @@ A => B => C => (API ROUTE) => C => B => A
 
 위 순서처럼 먼저넣은대로 넣은 순서의 역순으로 마무리가 된다. 
 
-## 각 Middleware 의 기능
+## 각 Middleware 의 순서 및 역할
 
-ApiLoggingMiddleware
-TryCatchMiddleware
+ApiLoggingMiddleware : 최종적으로 유저에게 response를 마무리하기 전 request/response 관련된 값을 로그로 남긴다.
+TryCatchMiddleware 
 AuthenticationMiddleware
 IdempotentMiddleware
 AutholizationMiddleware
 BufferMiddleware
 
-### ApiLogMiddleware
-
  
 
-### 결과기록, AfterResponseMiddleware
 
- 가장 첫번째 등록되는 미들웨어, 미리 라이브러리에 선언되어있으며
-
-network layer에 대한 처리가 끝난 후 로그를 쌓기 위해 남는다.
-
-일반적으로 로그를 남기기 위해서는 request/response stream에 몇가지 장치를 걸어줘야 하는데
-
-이부분을 미리 처리해두고 AfterResponse 함수에서 받아 쉽게 처리할 수 있도록한다.
-
-순서를 첫번째에 둬야 하는 이유 역시 request/response stream에 선행된 작업을 수행해야 하기 때문
-
-이후에 있을 TryCatch 미들웨어에서 결과값을 사용자에게 반환하는것 역시 기록해야 하기 때문에 역시 가장 빠른 순서를 두어야한다.
 
 ### 예외처리, TryCatchMiddleware
 
