@@ -1,4 +1,6 @@
-﻿namespace WebApiExample
+﻿using System;
+
+namespace WebApiExample
 {
     public enum AutholizeType
     {
@@ -7,6 +9,7 @@
         Subscriber,
     }
  
+    [AttributeUsage( AttributeTargets.Method)]
     public class UseIdempotent : System.Attribute
     {
 

@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Npgg.Middleware;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Text.Json;
-using Newtonsoft.Json;
-using System.Diagnostics;
 using System.IO;
 
 namespace WebApiExample.Middleware

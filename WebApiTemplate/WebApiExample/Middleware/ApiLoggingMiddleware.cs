@@ -9,7 +9,6 @@ using Npgg.Middleware;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Text.Json;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.IO;
@@ -46,7 +45,7 @@ namespace WebApiExample.Middleware
 
             watch.Stop();
 
-            bool isSuccess = context.Response.StatusCode > 199 && context.Response.StatusCode < 205;
+            //bool isSuccess = context.Response.StatusCode > 199 && context.Response.StatusCode < 205;
             var endpoint = context.GetEndpoint();
             var actionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
             var buffer = context.GetItem<RequestResponseResult>() ?? RequestResponseResult.Empty;

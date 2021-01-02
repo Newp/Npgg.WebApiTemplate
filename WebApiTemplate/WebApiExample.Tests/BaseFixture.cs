@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.TestHost;
-using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
@@ -21,7 +20,7 @@ namespace WebApiExample.Tests
                 collection.AddSingleton<LogService, MockLogService>();
             }));
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             //throw new NotImplementedException();
         }

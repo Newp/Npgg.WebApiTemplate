@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Net;
 using WebApiExample.Service;
-using System.Text.Json;
 using System.Net.Http;
 using WebApiExample.Controllers;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Tests
 {
@@ -17,7 +17,7 @@ namespace WebApiExample.Tests
         {
             this.client = base.GetClient();
 
-            string token = JsonSerializer.Serialize(new AccessToken() { Name = "unit_test" });
+            string token = JsonConvert.SerializeObject(new AccessToken() { Name = "unit_test" });
 
             client.DefaultRequestHeaders.Add("access_token", token);
             ValuesController.PostCount = 0; //테스트용으로 초기화해줌

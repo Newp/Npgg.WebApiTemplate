@@ -34,6 +34,7 @@ namespace WebApiExample
                     var log = new
                     {
                         eventId,
+                        categoryName,
                         message = formatter(state, exception)
                     };
 
