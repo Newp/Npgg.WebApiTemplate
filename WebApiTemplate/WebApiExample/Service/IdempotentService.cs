@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Runtime.Caching;
 
 namespace WebApiExample.Service
@@ -19,15 +20,25 @@ namespace WebApiExample.Service
     public class IdempotentService
     {
         readonly MemoryCache cache = new MemoryCache("cache_service");
+        readonly ConcurrentDictionary<string, int> requestIdList = new ConcurrentDictionary<string, int>();
         readonly CacheItemPolicy policy = new CacheItemPolicy
         {
             SlidingExpiration = TimeSpan.FromSeconds(100), //100초까지만 기다린다.
         };
 
+
+
+        public bool GetAcquire(string requestId) => requestIdList.TryAdd(requestId, 1);
+
+        public void ReleaseAcquire(string requestId)
+        {
+            //WIP: requestIdList에서 제거해야한다.
+        }
+
         public void Set(string requestId, object value)
         {
             //var content = JsonConvert.SerializeObject(value);
-
+            
             cache.Set(requestId, value, policy);
         }
 

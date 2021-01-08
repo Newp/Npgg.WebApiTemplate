@@ -42,7 +42,16 @@ namespace WebApiExample.Middleware
                 return;
             }
 
+
+            if(idempotentService.GetAcquire(requestId) == false) 
+                //이미 다른 request가 권한을 선점했다.
+            {
+                throw new HandledException(HttpStatusCode.Conflict);
+            }
+
             await next(context);
+
+            idempotentService.ReleaseAcquire(requestId);
 
             var proceed = context.GetRequiredItem<RequestResponseResult>();
 
