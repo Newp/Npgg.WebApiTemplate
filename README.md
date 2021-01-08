@@ -138,6 +138,10 @@ API에 도달하기 전에 기능을 해결할 수 있도록 도움을 줄것입
 
 이 프로젝트에서는 클라이언트에서 특정행위에 대한 흐름제어가 가능하고, 이에 대한 고유식별값을 request-id 헤더값을 통해 전달하는 방식을 고려한다.
 
+샘플 코드에서는 ConccurentDictionary와 MemoryCache를 통해 해당 기능을 구현하지만, 이는 단일 서버에서나 가능하며
+
+일반적인 고가용성 구성을 위해서는 Redis의 Increase 를 통해 훨씬 쉽고 scalable 하게 구성할 수 있다.
+
 
 
 ### BufferMiddleware
