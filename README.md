@@ -146,17 +146,22 @@ API에 도달하기 전에 기능을 해결할 수 있도록 도움을 줄것입
 
 ### BufferMiddleware
 
-http context에서 발생하는 request/response는 network stream을 통해 연결되어있기 때문에 middleware에서 중간에 읽기 위해서는 
-
-context의 request/response stream을 memory stream으로 변환해주고, 이를 읽어 필요한곳에 사용한 뒤, 다시 network stream에 copy 해줄 필요가 있다.
+http context에서 발생하는 request/response는 network stream을 통해 연결되어있기 때문에 middleware에서 중간에 읽기 위해서는 context의 request/response stream을 memory stream으로 변환해주고, 이를 읽어 필요한곳에 사용한 뒤, 다시 network stream에 copy 해줄 필요가 있다.
 
 즉 원래대로라면 
 
-request network stream -> (ROUTE) -> response network stream
+request network stream 
+-> (ROUTE) 
+-> response network stream
 
 에서
 
-request network stream-> request memory stream-> (ROUTE) -> response memory stream -> (MIDDLEWARE) -> response network stream
+request network stream
+-> request memory stream
+-> (ROUTE) 
+-> response memory stream 
+-> (MIDDLEWARE) 
+-> response network stream
 
 순서로 흐름을 제어한다.
 
