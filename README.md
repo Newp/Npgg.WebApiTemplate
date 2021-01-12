@@ -22,6 +22,7 @@ public async Task InvokeAsync(HttpContext context, RequestDelegate next)
    // 여기에 post process
 }
 ```
+*자세한 내용은 https://docs.microsoft.com/ko-kr/aspnet/core/fundamentals/middleware/?view=aspnetcore-5.0
 
 실행 전 작업 : 실제로 사용자가 해당 api를 사용할 수 있는지, 또는 서버가 가능한 상태인지를 검사한다. 이 경우 api의 동작을 막을 수 있다.
 ex1) 사용자가 정상적인 인증을 거친 이용자인지 검사
