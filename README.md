@@ -38,10 +38,13 @@ pre/post 처리 여부에 따라서 선택한다.
 
 다만 Stack처럼 A,B,C 세개의 middleware에서 InvokeAsync가 수행될 때, 아래처럼 수행된다.
 
-
-
-
-A => B => C => (API ROUTE) => C => B => A
+A=> 
+  B=> 
+    C=> 
+      (API ROUTE)
+    C<=
+  B<=
+A<=
 
 위 순서처럼 먼저넣은대로 넣은 순서의 역순으로 마무리가 된다. 
 
