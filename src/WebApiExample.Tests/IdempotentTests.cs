@@ -79,6 +79,12 @@ namespace WebApiExample.Tests
                 var response1 = await task1;
                 Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
 
+                var response3 = await client.PostAsync(path, content);
+                Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
+
+                var content1 = await response1.Content.ReadAsStringAsync();
+                var content2 = await response3.Content.ReadAsStringAsync();
+                Assert.Equal(content1, content2);
             }
         }
 
