@@ -59,5 +59,37 @@ namespace WebApiExample.Tests
                 Assert.Equal("2", await response.Content.ReadAsStringAsync());
             }
         }
+
+
+
+        [Fact]
+        public async Task IdempotentPreoccupyOk()
+        {
+            var path = "/api/values";
+
+            //첫번째 요청
+            {
+                var content = base.CreateContent("test");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    var response = await client.PostAsync(path, content);
+
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    Assert.Equal("1", await response.Content.ReadAsStringAsync());
+                }
+            }
+
+            //두번째 요청
+            {
+                var content = base.CreateContent("test");
+                var response = await client.PostAsync(path, content);
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal("2", await response.Content.ReadAsStringAsync());
+            }
+        }
+
+
+
     }
 }

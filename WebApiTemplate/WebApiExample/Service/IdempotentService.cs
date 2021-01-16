@@ -26,9 +26,7 @@ namespace WebApiExample.Service
             SlidingExpiration = TimeSpan.FromSeconds(100), //100초까지만 기다린다.
         };
 
-
-
-        public bool GetAcquire(string requestId) => requestIdList.TryAdd(requestId, 1);
+        public bool TryPreoccupy(string requestId) => requestIdList.TryAdd(requestId, 1);
 
         public void ReleaseAcquire(string requestId)
         {

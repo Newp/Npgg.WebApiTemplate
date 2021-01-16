@@ -43,8 +43,8 @@ namespace WebApiExample.Middleware
             }
 
 
-            if(idempotentService.GetAcquire(requestId) == false) 
-                //이미 다른 request가 권한을 선점했다.
+            if(idempotentService.TryPreoccupy(requestId) == false)
+            //이미 다른 request, 가 권한을 선점했다. indentical request 
             {
                 throw new HandledException(HttpStatusCode.Conflict);
             }
