@@ -15,14 +15,27 @@ jobs:
         working-directory: ./src
 
     steps:
+    
+    - name: Setup timezone
+      uses: zcong1993/setup-timezone@master
+      with:
+        timezone: Asia/Seoul
+            
+    - name : docker image ready
+      run: docker-compose up -d
+      working-directory: ./github
+
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.101
+
     - name: Install dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --configuration Release --no-restore
+
     - name: Test
       run: dotnet test --no-restore --verbosity normal
