@@ -65,27 +65,20 @@ namespace WebApiExample.Tests
         [Fact]
         public async Task IdempotentPreoccupyOk()
         {
-            var path = "/api/values";
+            var path = "/api/values?delay=300";
 
             //첫번째 요청
             {
                 var content = base.CreateContent("test");
 
-                for (int i = 0; i < 10; i++)
-                {
-                    var response = await client.PostAsync(path, content);
+                var task1 = client.PostAsync(path, content);
+                var response2 = await client.PostAsync(path, content);
 
-                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                    Assert.Equal("1", await response.Content.ReadAsStringAsync());
-                }
-            }
+                Assert.Equal(HttpStatusCode.Conflict, response2.StatusCode);
 
-            //두번째 요청
-            {
-                var content = base.CreateContent("test");
-                var response = await client.PostAsync(path, content);
-                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                Assert.Equal("2", await response.Content.ReadAsStringAsync());
+                var response1 = await task1;
+                Assert.Equal(HttpStatusCode.OK, response1.StatusCode);
+
             }
         }
 

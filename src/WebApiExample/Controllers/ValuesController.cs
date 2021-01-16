@@ -60,6 +60,10 @@ namespace WebApiExample.Controllers
         public static int PostCount { get; set; }
 
         [HttpPost]
-        public int Post() => ++PostCount;
+        public async Task<int> Post([FromQuery] int delay = 0)
+        {
+            await Task.Delay(delay);
+            return ++PostCount;
+        }
     }
 }
