@@ -7,20 +7,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebApiExample.Middleware;
 using WebApiExample.Service;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace WebApiExample
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllers()
                 .AddNewtonsoftJson(); // action result 의 값을 json 타입으로 변환시켜줍니다.
 
@@ -38,7 +35,7 @@ namespace WebApiExample
             services.AddSingleton<IdempotentService>();
 
             services.AddScoped<AuthenticationInfo>();
-            
+            services.AddDbContextPool<SqlContext>(option => option.UseMySQL("Server=localhost;Database=npgg;User Id=root;Password=unit_test_password;"));
         }
 
 
@@ -53,9 +50,6 @@ namespace WebApiExample
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-
-            
             
             app.UseMiddleware<ApiLoggingMiddleware>();
             app.UseMiddleware<TryCatchMiddleware>();
