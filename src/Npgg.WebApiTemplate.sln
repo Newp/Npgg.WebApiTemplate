@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{ED1FFA56-6502-447C-A5EE-286B3F929C1E}"
 	ProjectSection(SolutionItems) = preProject
-		..\.github\docker-compose.yml = ..\.github\docker-compose.yml
+		..\docker\docker-compose.yml = ..\docker\docker-compose.yml
 		..\.github\workflows\dotnet-core.yml = ..\.github\workflows\dotnet-core.yml
 	EndProjectSection
 EndProject

@@ -23,7 +23,7 @@ jobs:
             
     - name : docker image ready
       run: docker-compose up -d
-      working-directory: ./github
+      working-directory: ./docker
 
     - uses: actions/checkout@v2
     - name: Setup .NET Core
