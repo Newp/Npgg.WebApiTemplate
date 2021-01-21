@@ -50,13 +50,17 @@ namespace WebApiExample
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
+            #region middleware , !!순서 매우 중요함!!
+
             app.UseMiddleware<ApiLoggingMiddleware>();
             app.UseMiddleware<TryCatchMiddleware>();
             app.UseMiddleware<AuthenticationMiddleware>();
             app.UseMiddleware<IdempotentMiddleware>();
             app.UseMiddleware<AutholizationMiddleware>();
             app.UseMiddleware<BufferMiddleware>();
+
+            #endregion
 
             app.UseAuthorization();
 
