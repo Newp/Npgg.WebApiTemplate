@@ -10,15 +10,21 @@ namespace WebApiExample.Tests
 {
     public class BaseFixture : IDisposable
     {
-        public Guid Guid = Guid.NewGuid();
+        static readonly Counter sequenceCounter = new Counter();
 
-        public TestServer testServer = new TestServer(new WebHostBuilder()
-            .UseStartup<Startup>()
-            .ConfigureTestServices(collection =>
-            {
-                collection.AddControllers();
-                collection.AddSingleton<LogService, MockLogService>();
-            }));
+        public readonly int Sequence;
+        public readonly TestServer testServer;
+        public BaseFixture()
+        {
+            this.Sequence = sequenceCounter.Increase();
+            this.testServer = new TestServer(new WebHostBuilder()
+                .UseStartup<Startup>()
+                .ConfigureTestServices(collection =>
+                {
+                    collection.AddControllers();
+                    collection.AddSingleton<LogService, MockLogService>();
+                }));
+        }
 
         void IDisposable.Dispose()
         {
