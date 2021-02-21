@@ -3,8 +3,8 @@ services:
   db:
     image: mysql:8.0
     environment:
-      - MYSQL_DATABASE=npgg
-      - MYSQL_ROOT_PASSWORD=unit_test_password
+      - MYSQL_DATABASE=local_db
+      - MYSQL_ROOT_PASSWORD=local_password
 
     ports:
       - 3306:3306

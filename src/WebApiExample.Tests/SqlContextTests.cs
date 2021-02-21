@@ -13,11 +13,22 @@ namespace WebApiExample.Tests
         public SqlContextTests()
         {
             this.context = base.GetService<SqlContext>();
+
+            this.context.Database.EnsureCreated();
         }
 
         [Fact]
-        public void Test()
+        public async Task Test()
         {
+            var kvp = new KeyValue()
+            {
+                Key = "abc",
+                Value = "abbaasf"
+            };
+
+            this.context.KeyValues?.Add(kvp);
+            await this.context.SaveChangesAsync();
+
         }
     }
 }

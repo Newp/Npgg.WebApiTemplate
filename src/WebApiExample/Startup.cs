@@ -35,7 +35,7 @@ namespace WebApiExample
             services.AddSingleton<IdempotentService>();
 
             services.AddScoped<AuthenticationInfo>();
-            services.AddDbContextPool<SqlContext>(option => option.UseMySQL("Server=localhost;Database=npgg;User Id=root;Password=unit_test_password;"));
+            services.AddDbContextPool<SqlContext>(option => option.UseMySQL("Server=localhost;Database=local_db;User Id=root;Password=local_password;"));
         }
 
 
