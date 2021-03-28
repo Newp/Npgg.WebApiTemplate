@@ -130,5 +130,16 @@ namespace WebApiExample.Tests
             Assert.Equal(HttpStatusCode.Forbidden, result.StatusCode);
         }
 
+
+
+        [Fact]
+        public async Task HandledExceptionTest()
+        {
+            var path = "/api/values/handledException";
+            var result = await client.GetAsync(path);
+
+            Assert.Equal(HttpStatusCode.Conflict, result.StatusCode);
+        }
+
     }
 }

@@ -57,6 +57,10 @@ namespace WebApiExample.Controllers
         [AnonymousApi]
         public string GetException([FromBody] string message) => throw new Exception(message);
 
+        [HttpGet("handledException")]
+        [AnonymousApi]
+        public string GetHandledException() => throw new HandledException( System.Net.HttpStatusCode.Conflict, "handled exception");
+
         public static int PostCount { get; set; }
 
         [HttpPost]

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Npgg.Middleware;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace WebApiExample.Middleware
 {
@@ -29,9 +30,15 @@ namespace WebApiExample.Middleware
             {
                 await next(context);
             }
-            catch (Exception)
+            catch (HandledException hex)
             {
-                throw;
+                context.Response.StatusCode = (int)hex.StatusCode;
+
+                if (hex.ResponseObject != null)
+                {
+                    var handledExceptionBody = JsonConvert.SerializeObject(hex.ResponseObject);
+                    await context.Response.WriteAsync(handledExceptionBody);
+                }
             }
             finally
             {

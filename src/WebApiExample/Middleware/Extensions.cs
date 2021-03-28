@@ -26,7 +26,7 @@ namespace Npgg.Middleware
                 //throw new Exception($"context item not found=>{key.FullName}");
             }
 
-            return (T)obj;
+            return (T)obj!;
         }
         public static T GetRequiredItem<T>(this HttpContext httpContext) where T : notnull
         {
