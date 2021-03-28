@@ -22,7 +22,7 @@ namespace WebApiExample.Tests
         {
             var kvp = new KeyValue()
             {
-                Key = "abc",
+                Key = Guid.NewGuid().ToString(),
                 Value = "abbaasf"
             };
 
